@@ -17,21 +17,29 @@
 #define NUM_THREADS 2
 
 int i;
+pthread_mutex_t mutex_i;
 
 void *foo (void *bar)
 {
+
+    //Took a look at the pthread api and used example on page:
+    //https://computing.llnl.gov/tutorials/pthreads/#Mutexes
     pthread_t *me = new pthread_t (pthread_self());
     printf("in a foo thread, ID %ld\n", *me);
 
+    pthread_mutex_lock(&mutex_i);
     for (i = 0; i < *((int *) bar); i++)
     {
+        
         int tmp = i;
-
+        
         if (tmp != i)
         {
             printf ("aargh: %d != %d\n", tmp, i);
         }
+        
     }
+    pthread_mutex_unlock(&mutex_i);
 
     pthread_exit (me);
 }
